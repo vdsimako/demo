@@ -5,6 +5,7 @@ import lombok.*;
 import ru.vdsimako.demo.model.enums.UserStatus;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,7 +15,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "user_id")
@@ -34,4 +35,15 @@ public class User {
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_id")
     private List<Request> requestList;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", userStatus=" + userStatus +
+                ", requestList=" + requestList +
+                '}';
+    }
 }

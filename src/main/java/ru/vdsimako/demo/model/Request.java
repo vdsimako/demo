@@ -31,4 +31,15 @@ public class Request implements Serializable {
     @Column(name = "req_status")
     @Enumerated(EnumType.STRING)
     private RequestStatus requestStatus;
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "id=" + id +
+                ", requestName='" + requestName + '\'' +
+                ", requestDesc='" + requestDesc + '\'' +
+                ", responsibleUser=" + responsibleUser +
+                ", requestStatus=" + requestStatus +
+                '}';
+    }
 }

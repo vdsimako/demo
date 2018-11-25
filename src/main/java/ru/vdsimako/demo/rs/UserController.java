@@ -2,14 +2,10 @@ package ru.vdsimako.demo.rs;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.vdsimako.demo.model.Request;
-import ru.vdsimako.demo.model.enums.RequestStatus;
 import ru.vdsimako.demo.model.User;
-import ru.vdsimako.demo.model.enums.UserStatus;
 import ru.vdsimako.demo.repository.UserRepository;
+import ru.vdsimako.demo.service.UserService;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -17,9 +13,12 @@ import java.util.List;
 public class UserController {
 
     private UserRepository userRepository;
+    private UserService userService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository,
+                          UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/getUserList")
@@ -32,20 +31,13 @@ public class UserController {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    @GetMapping("/getTest")
-    public ResponseEntity<User> getTestUser() {
-        return ResponseEntity.ok(User.builder()
-                .id(1l)
-                .login("login")
-                .userStatus(UserStatus.ONLINE)
-                .fullName("fullname")
-                .requestList(Collections.singletonList(Request.builder()
-                        .id(1l)
-                        .requestName("requestName")
-                        .requestDesc("requestDescription")
-                        .requestStatus(RequestStatus.OPEN)
-                        .responsibleUser(1l)
-                        .build()))
-                .build());
+    @PatchMapping("/logOut")
+    public ResponseEntity<User> logOutUser(@RequestBody User user) {
+        user = userService.logOutUser(user);
+
+        System.out.println(user);
+
+        userService.spreadRequestsBetweenActiveUsers(user.getRequestList());
+        return ResponseEntity.ok(null);
     }
 }
